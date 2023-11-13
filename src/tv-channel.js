@@ -17,6 +17,7 @@ export class TvChannel extends LitElement {
     return {
       title: { type: String },
       presenter: { type: String },
+      description: { type: String}
     };
   }
   // LitElement convention for applying styles JUST to our element

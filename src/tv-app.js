@@ -53,12 +53,15 @@ export class TvApp extends LitElement {
         )
       }
       <div>
-        <!-- video -->
+        <div>
+        
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/Cv7xiwdJO74?si=Xt5D5il-MAgS-fO3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
         <!-- discord / chat - optional -->
       </div>
       <!-- dialog -->
       <sl-dialog label="Dialog" class="dialog">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        i need to put the information here
         <sl-button slot="footer" variant="primary" @click="${this.closeDialog}">Close</sl-button>
       </sl-dialog>
     `;
