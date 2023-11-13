@@ -52,20 +52,28 @@ export class TvApp extends LitElement {
           `
         )
       }
+      ${this.discordUrl
+      ? html`
+          <div>
+            <!-- Discord Widget (embed URL) -->
+          </div>
+        `
+      : ''}
       <div>
-        <div>
-        
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/Cv7xiwdJO74?si=Xt5D5il-MAgS-fO3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        </div>
+        <!-- video -->
         <!-- discord / chat - optional -->
       </div>
       <!-- dialog -->
-      <sl-dialog label="Dialog" class="dialog">
-        i need to put the information here
-        <sl-button slot="footer" variant="primary" @click="${this.closeDialog}">Close</sl-button>
+      <sl-dialog label="information goes here?" class="dialog">
+      <h3>${this.activeChannel ? this.activeChannel.title : ''}</h3>
+      <p>${this.activeChannel ? this.activeChannel.presenter : ''}</p>
+      <!-- Add YouTube video player here -->
+      <button @click="${this.watchVideo}">Watch</button>
       </sl-dialog>
+      <tv-channel-list @watch-channel="${this.watchChannel}"></tv-channel-list>
     `;
   }
+
 
   closeDialog(e) {
     const dialog = this.shadowRoot.querySelector('.dialog');
@@ -74,6 +82,32 @@ export class TvApp extends LitElement {
 
   itemClick(e) {
     console.log(e.target);
+    const dialog = this.shadowRoot.querySelector('.dialog');
+    dialog.show();
+  }
+
+// adding the watch button
+  watchChannel(e) {
+    const { title, description, videoLink } = e.detail;
+    this.activeChannel = { title, description, videoLink };
+    this.closeDialog();
+    }
+  
+    watchVideo() {
+      // Assuming you have a video player component
+      const videoPlayer = this.shadowRoot.querySelector('#video-player'); // Adjust the selector as needed
+      videoPlayer.play(this.activeChannel.videoLink);
+    
+      // Update description below the video
+      const descriptionElement = this.shadowRoot.querySelector('#video-description'); // Adjust the selector as needed
+      descriptionElement.textContent = this.activeChannel.description;
+    
+      // Close the modal
+      this.closeDialog();
+    }
+    
+    // Add a method to open the dialog
+  openDialog() {
     const dialog = this.shadowRoot.querySelector('.dialog');
     dialog.show();
   }
