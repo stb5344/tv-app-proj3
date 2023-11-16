@@ -11,6 +11,11 @@ export class TvApp extends LitElement {
     this.name = '';
     this.source = new URL('../assets/channels.json', import.meta.url).href;
     this.listings = [];
+    this.activeItem = {
+      title: null,
+      id: null,
+      description: null,
+    };
   }
   // convention I enjoy using to define the tag's name
   static get tag() {
@@ -22,6 +27,7 @@ export class TvApp extends LitElement {
       name: { type: String },
       source: { type: String },
       listings: { type: Array },
+      activeItem: { type: Object }
     };
   }
   // LitElement convention for applying styles JUST to our element
@@ -33,48 +39,102 @@ export class TvApp extends LitElement {
         margin: 16px;
         padding: 16px;
       }
-      `
+      .listing-container {
+        justify-self: center;
+        max-width: 1344px;
+        justify-items: left;
+        display: flex;
+        flex-direction: row;
+        flex-grow: 1;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: auto;
+        padding-left: .5rem;
+        padding-right: .5rem;
+        text-rendering: optimizeLegibility;
+        width: 100%;
+        margin: 0 auto;
+        position: relative;
+        animation-delay: 1s;
+        animation-duration: 1s;
+        line-height: 1.5;
+        font-size: 1em;
+      }
+      h5 {
+        font-weight: 400;
+      }
+      .discord {
+        display: inline-flex;
+      }
+      .middle-page{
+        display: inline-flex;
+      }
+      .
+      `,
     ];
   }
   // LitElement rendering template of your element
   render() {
     return html`
-      <h2>${this.name}</h2>
+       <h2>${this.name}</h2>
+      <div class="listing-container">
       ${
         this.listings.map(
           (item) => html`
             <tv-channel 
               title="${item.title}"
               presenter="${item.metadata.author}"
+              description="${item.description}"
               @click="${this.itemClick}"
+              video="${item.metadata.source}"
             >
             </tv-channel>
           `
         )
       }
-      ${this.discordUrl
-      ? html`
-          <div>
-            <!-- Discord Widget (embed URL) -->
-          </div>
-        `
-      : ''}
-      <div>
-        <!-- video -->
-        <!-- discord / chat - optional -->
       </div>
-      <!-- dialog -->
-      <sl-dialog label="information goes here?" class="dialog">
-      <h3>${this.activeChannel ? this.activeChannel.title : ''}</h3>
-      <p>${this.activeChannel ? this.activeChannel.presenter : ''}</p>
-      <!-- Add YouTube video player here -->
-      <button @click="${this.watchVideo}">Watch</button>
+
+      <div class="middle-page">
+        <!-- video -->
+      <figure id="player-figure" class="image is-16by9">
+                <iframe id="player" class="has-ratio box p-0" width="560" height="315" src="https://www.youtube.com/embed/QJMBhXjtaYU?enablejsapi=1" title="Teaching for Now and Planning for Later - Reclaim Open Online" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+              </figure>
+ <!-- discord / chat - optional -->
+        
+ <div class="discord">
+              <widgetbot server="954008116800938044" channel="1106691466274803723" width="100%" height="100%" style="display: inline-block; overflow: hidden; background-color: rgb(54, 57, 62); border-radius: 7px; vertical-align: top; width: 100%; height: 100%;"><iframe title="WidgetBot Discord chat embed" allow="clipboard-write; fullscreen" src="https://e.widgetbot.io/channels/954008116800938044/1106691466274803723?api=a45a80a7-e7cf-4a79-8414-49ca31324752" style="border: none; width: 100%; height: 100%;"></iframe></widgetbot>
+              <script src="https://cdn.jsdelivr.net/npm/@widgetbot/html-embed"></script>
+            </div>
+      </div>
+      
+      <sl-dialog label="${this.activeItem.title}" class="dialog">
+      <p>
+      ${this.activeItem.description}
+    </p>
+        <sl-button slot="footer" variant="primary" @click="${this.closeDialog}">Close</sl-button>
       </sl-dialog>
-      <tv-channel-list @watch-channel="${this.watchChannel}"></tv-channel-list>
+    <
     `;
   }
 
-
+changeVideo() {
+    const iframe = this.shadowRoot.querySelector('iframe');
+    iframe.src = this.createSource();
+  }
+   extractVideoId(link) {
+    try {
+      const url = new URL(link);
+      const searchParams = new URLSearchParams(url.search);
+      return searchParams.get("v");
+    } catch (error) {
+      console.error("Invalid URL:", link);
+      return null;
+    }
+  }
+  createSource() {
+    return "https://www.youtube.com/embed/" + this.extractVideoId(this.activeItem.video);
+  }
+  
   closeDialog(e) {
     const dialog = this.shadowRoot.querySelector('.dialog');
     dialog.hide();
@@ -82,32 +142,13 @@ export class TvApp extends LitElement {
 
   itemClick(e) {
     console.log(e.target);
-    const dialog = this.shadowRoot.querySelector('.dialog');
-    dialog.show();
-  }
-
-// adding the watch button
-  watchChannel(e) {
-    const { title, description, videoLink } = e.detail;
-    this.activeChannel = { title, description, videoLink };
-    this.closeDialog();
-    }
-  
-    watchVideo() {
-      // Assuming you have a video player component
-      const videoPlayer = this.shadowRoot.querySelector('#video-player'); // Adjust the selector as needed
-      videoPlayer.play(this.activeChannel.videoLink);
-    
-      // Update description below the video
-      const descriptionElement = this.shadowRoot.querySelector('#video-description'); // Adjust the selector as needed
-      descriptionElement.textContent = this.activeChannel.description;
-    
-      // Close the modal
-      this.closeDialog();
-    }
-    
-    // Add a method to open the dialog
-  openDialog() {
+    this.activeItem = {
+      title: e.target.title,
+      id: e.target.id,
+      description: e.target.description,
+      video: e.target.video, 
+    };
+    this.changeVideo(); // Call changeVideo 
     const dialog = this.shadowRoot.querySelector('.dialog');
     dialog.show();
   }
@@ -128,6 +169,7 @@ export class TvApp extends LitElement {
     await fetch(source).then((resp) => resp.ok ? resp.json() : []).then((responseData) => {
       if (responseData.status === 200 && responseData.data.items && responseData.data.items.length > 0) {
         this.listings = [...responseData.data.items];
+        console.log(this.listings);
       }
     });
   }
