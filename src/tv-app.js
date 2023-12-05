@@ -3,6 +3,7 @@ import { LitElement, html, css } from 'lit';
 import '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import "./tv-channel.js";
+import "@lrnwebcomponents/video-player/video-player.js";
 
 export class TvApp extends LitElement {
   // defaults
@@ -78,10 +79,8 @@ export class TvApp extends LitElement {
         }
  
         .player-container {
-          border-radius: 8px;
-          padding: 12px;
-          display: flex;
-          width: 66%;
+          width: 800px;
+  height: 450px;
         }
  
         .player {
@@ -132,12 +131,10 @@ export class TvApp extends LitElement {
       </div>
       <div class="main-content">
       <div class="player-container">
-        <!-- video -->
-        <iframe class="player"
-          src="${this.createSource()}"
-          frameborder="0"
-          allowfullscreen>
-        </iframe>
+      <video-player source="https://www.youtube.com/watch?v=LrS7dqokTLE" accent-color="orange" dark track="https://haxtheweb.org/files/HAXshort.vtt">
+      </video-player>
+
+        
        
        
       </div>
@@ -151,6 +148,7 @@ export class TvApp extends LitElement {
       <div>
     <tv-channel title=${this.activeItem.title} presenter=${this.activeItem.author}>
     <p id= "description">
+    ${this.activeItem.author}
     ${this.activeItem.description}
   </p>
   </tv-channel>
@@ -158,12 +156,12 @@ export class TvApp extends LitElement {
 
 
       <sl-dialog label="${this.activeItem.title}" class="dialog">
-      <p>
+      <p id = "description">
       ${this.activeItem.description}
+      ${this.activeItem.author}
     </p>
         <sl-button slot="footer" variant="primary" @click="${this.closeDialog}">Close</sl-button>
       </sl-dialog>
-    <
     `;
   }
 
