@@ -80,7 +80,7 @@ export class TvApp extends LitElement {
  
         .player-container {
           width: 800px;
-  height: 450px;
+          height: 450px;
         }
  
         .player {
@@ -146,7 +146,7 @@ export class TvApp extends LitElement {
       </div>
       
       <div>
-    <tv-channel title=${this.activeItem.title} presenter=${this.activeItem.author}>
+    <tv-channel title=${this.activeItem.title} presenter=${this.activeItem.presenter}>
     <p id= "description">
     ${this.activeItem.author}
     ${this.activeItem.description}
@@ -155,19 +155,22 @@ export class TvApp extends LitElement {
   </div>
 
 
-      <sl-dialog label="${this.activeItem.title}" class="dialog">
-      <p id = "description">
+      <sl-dialog label="${this.activeItem.title}" presenter=${this.activeItem.presenter} class="dialog">
+      <p>
       ${this.activeItem.description}
-      ${this.activeItem.author}
     </p>
-        <sl-button slot="footer" variant="primary" @click="${this.closeDialog}">Close</sl-button>
+      <sl-button slot="footer" variant="primary" @click="${this.closeDialog}">Close</sl-button>
       </sl-dialog>
+    </p>
     `;
   }
 
   changeVideo() {
-    const iframe = this.shadowRoot.querySelector('iframe');
-    iframe.src = this.createSource();
+    this.shadowRoot.querySelector('video-player').shadowRoot.querySelector("a11y-media-player").media.currentTime
+    // this forces the video to play
+    this.shadowRoot.querySelector('video-player').shadowRoot.querySelector('a11y-media-player').play()
+    // this forces the video to jump to this point in the video via SECONDS
+    this.shadowRoot.querySelector('video-player').shadowRoot.querySelector('a11y-media-player').seek(40)
   }
   extractVideoId(link) {
     try {
