@@ -11,11 +11,11 @@
       {
         "id": "item-123-456-789",
         "indent": 0,
-        "location": "hax-wp-killer.html",
-        "slug": "hax-wp-killer",
+        "location": "wp-killer.html",
+        "slug": "wp-killer",
         "order": 0,
         "parent": null,
-        "title": "HAX: Wordpress Killer",
+        "title": "Wordpress Killer",
         "description": "The future we need, not the future we have.",
         "metadata": {
           "source": "https://www.youtube.com/watch?v=9MT-BNuUCpM",
@@ -55,6 +55,57 @@
           "source": "https://www.youtube.com/watch?v=eC7xzavzEKY",
           "timecode": 45,
           "author":"Monald Swaos",
+          "created": 1697033522,
+          "updated": 1697034021
+        }
+      },
+      {
+        "id": "item-abc-999",
+        "indent": 0,
+        "location": "Google-Chart-Tools-Responsive-charts.html",
+        "slug": "this-is-la",
+        "order": 0,
+        "parent": null,
+        "title": "Google Chart Tools",
+        "description": "Provide ability for responsive charts",
+        "metadata": {
+          "source": "https://www.youtube.com/watch?v=AwBfvXcdfcA",
+          "timecode": 45,
+          "author":"Bryan Ollendyke",
+          "created": 1697033522,
+          "updated": 1697034021
+        }  
+      },
+      {
+        "id": "item-abc-123",
+        "indent": 0,
+        "location": "Profile-Builder.html",
+        "slug": "Profile-Builder",
+        "order": 0,
+        "parent": null,
+        "title": "Profile Builder",
+        "description": "Create distributions and install profiles",
+        "metadata": {
+          "source": "https://www.youtube.com/watch?v=JNqTgRrZx74",
+          "timecode": 45,
+          "author":"Bryan Ollendyke",
+          "created": 1697033522,
+          "updated": 1697034021
+        }
+      },
+      {
+        "id": "item-abc-123",
+        "indent": 0,
+        "location": "Entity-Iframe.html",
+        "slug": "Entity-Iframe",
+        "order": 0,
+        "parent": null,
+        "title": "Entity Iframe",
+        "description": "Entity iframe module",
+        "metadata": {
+          "source": "https://www.youtube.com/watch?v=xxSsNO_LwwI",
+          "timecode": 45,
+          "author":"Bryan Ollendyke",
           "created": 1697033522,
           "updated": 1697034021
         }

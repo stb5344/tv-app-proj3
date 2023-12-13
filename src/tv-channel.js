@@ -7,6 +7,7 @@ export class TvChannel extends LitElement {
     super();
     this.title = '';
     this.presenter = '';
+    this.video= '';
   }
   // convention I enjoy using to define the tag's name
   static get tag() {
@@ -58,7 +59,7 @@ export class TvChannel extends LitElement {
     return html`
       <div class="wrapper">
         <h3>${this.title}</h3>
-        <h4>${this.presenter}</h4>
+        <h4>${this.description}</h4>
         <slot></slot>
       </div>  
       `;

@@ -16,7 +16,13 @@ export class TvApp extends LitElement {
       title: null,
       id: null,
       description: null,
-      author: null,
+      presenter: null,
+    };
+    this.nextItem = {
+      title: null,
+      id: null,
+      description: null,
+      presenter: null,
     };
   }
   // convention I enjoy using to define the tag's name
@@ -29,7 +35,8 @@ export class TvApp extends LitElement {
       name: { type: String },
       source: { type: String },
       listings: { type: Array },
-      activeItem: { type: Object }
+      activeItem: { type: Object },
+      nextItem: { type: Object }
     };
   }
   // LitElement convention for applying styles JUST to our element
@@ -148,29 +155,25 @@ export class TvApp extends LitElement {
       <div>
     <tv-channel title=${this.activeItem.title} presenter=${this.activeItem.presenter}>
     <p id= "description">
-    ${this.activeItem.author}
     ${this.activeItem.description}
   </p>
   </tv-channel>
   </div>
-
-
-      <sl-dialog label="${this.activeItem.title}" presenter=${this.activeItem.presenter} class="dialog">
+    
+  <sl-dialog label="${this.activeItem.title}" presenter=${this.activeItem.presenter} class="dialog">
       <p>
       ${this.activeItem.description}
     </p>
-      <sl-button slot="footer" variant="primary" @click="${this.closeDialog}">Close</sl-button>
+      <sl-button slot="footer" variant="primary" @click="${this.changeVideo}">Watch</sl-button>
       </sl-dialog>
     </p>
     `;
   }
 
   changeVideo() {
-    this.shadowRoot.querySelector('video-player').shadowRoot.querySelector("a11y-media-player").media.currentTime
+    this.shadowRoot.querySelector('video-player').shadowRoot.querySelector("a11y-media-player").media.current
     // this forces the video to play
     this.shadowRoot.querySelector('video-player').shadowRoot.querySelector('a11y-media-player').play()
-    // this forces the video to jump to this point in the video via SECONDS
-    this.shadowRoot.querySelector('video-player').shadowRoot.querySelector('a11y-media-player').seek(40)
   }
   extractVideoId(link) {
     try {
@@ -186,9 +189,12 @@ export class TvApp extends LitElement {
     return "https://www.youtube.com/embed/" + this.extractVideoId(this.activeItem.video);
   }
 
-  closeDialog(e) {
+  watchVideo(e)
+  {
     const dialog = this.shadowRoot.querySelector('.dialog');
     dialog.hide();
+    this.activeItem = this.nextItem;
+    this.shadowRoot.querySelector('video-player').shadowRoot.querySelector('a11y-media-player').play();
   }
 
   itemClick(e) {
