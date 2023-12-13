@@ -69,17 +69,11 @@ export class TvApp extends LitElement {
         line-height: 1.5;
         font-size: 1em;
       }
-      h5 {
-        font-weight: 400;
-      }
-      .discord {
-        display: inline-flex;
-      }
       .middle-page{
         display: inline-flex;
       }
 
-.main-content {
+        .main-content {
           display: flex;
           flex-direction: row;
           margin: 12px;
@@ -102,16 +96,25 @@ export class TvApp extends LitElement {
         }
  
         .discord widgetbot {
-          overflow: hidden;
-          background-color: rgb(54, 57, 62);
-          border-radius: 8px;
-          vertical-align: top;
+          display: inline-block;
+        overflow: hidden;
+        background-color: rgb(54, 57, 62);
+        border-radius: 8px;
+        vertical-align: top;
+        width: 100%;
+        height: 100%;
         }
         .discord iframe {
         border-radius: 8px;
         border: none;
         width: 100%;
         height: 100%;
+      }
+      .description {
+        border-radius: 8px;
+        padding: 8px;
+        display: flex;
+        width: 100%;
       }
       .
       `,
@@ -124,7 +127,7 @@ export class TvApp extends LitElement {
       <div class="listing-container">
       ${this.listings.map(
       (item) => html`
-            <tv-channel 
+            <tv-channel
               title="${item.title}"
               presenter="${item.metadata.author}"
               description="${item.description}"
@@ -136,44 +139,47 @@ export class TvApp extends LitElement {
     )
       }
       </div>
-      <div class="main-content">
-      <div class="player-container">
-      <video-player source="https://www.youtube.com/watch?v=LrS7dqokTLE" accent-color="orange" dark track="https://haxtheweb.org/files/HAXshort.vtt">
-      </video-player>
-
-        
-       
-       
+    <div class="main-content">
+    <div class="player-container">
+        <!-- video -->
+        <video-player 
+          class="player"
+          source="${this.createSource()}" 
+          accent-color="orange" 
+          dark track="https://haxtheweb.org/files/HAXshort.vtt">
+        </video-player>
+    </div>
+    
+    <!-- discord  -->
+    <div class="discord">
+        <widgetbot server="954008116800938044" channel="1106691466274803723" width="100%" height="100%"><iframe title="WidgetBot Discord chat embed" allow="clipboard-write; fullscreen" src="https://e.widgetbot.io/channels/954008116800938044/1106691466274803723?api=a45a80a7-e7cf-4a79-8414-49ca31324752"></iframe></widgetbot>
+        <script src="https://cdn.jsdelivr.net/npm/@widgetbot/html-embed"></script>
       </div>
-      <!-- discord / chat - optional -->
-      <div class="discord">
-          <widgetbot server="954008116800938044" channel="1106691466274803723" width="100%" height="100%"><iframe title="WidgetBot Discord chat embed" allow="clipboard-write; fullscreen" src="https://e.widgetbot.io/channels/954008116800938044/1106691466274803723?api=a45a80a7-e7cf-4a79-8414-49ca31324752"></iframe></widgetbot>
-          <script src="https://cdn.jsdelivr.net/npm/@widgetbot/html-embed"></script>
-        </div>
-      </div>
-      
-      <div>
-    <tv-channel title=${this.activeItem.title} presenter=${this.activeItem.presenter}>
-    <p id= "description">
-    ${this.activeItem.description}
-  </p>
+    </div>
+    
+  <!-- description -->
+  <div>
+    <tv-channel class="description">
+    <h2>${this.nextItem.title}</h2>
+    <h3>${this.activeItem.presenter}</h3>
+    <p>${this.activeItem.description}</p>
   </tv-channel>
   </div>
     
-  <sl-dialog label="${this.activeItem.title}" presenter=${this.activeItem.presenter} class="dialog">
-      <p>
-      ${this.activeItem.description}
-    </p>
-      <sl-button slot="footer" variant="primary" @click="${this.changeVideo}">Watch</sl-button>
-      </sl-dialog>
-    </p>
+  <!-- dialog -->
+  <sl-dialog class="dialog">
+      <h2>${this.nextItem.title}</h2>
+      <h3>${this.nextItem.presenter}</h3>
+      <p>${this.nextItem.description}</p>
+      <sl-button slot="footer" variant="primary" @click="${this.watchVideo}">WATCH</sl-button>
+  </sl-dialog>
     `;
   }
 
   changeVideo() {
-    this.shadowRoot.querySelector('video-player').shadowRoot.querySelector("a11y-media-player").media.current
-    // this forces the video to play
-    this.shadowRoot.querySelector('video-player').shadowRoot.querySelector('a11y-media-player').play()
+    const iframe = this.shadowRoot.querySelector('video-player').querySelector('iframe');
+    iframe.src = this.createSource();
+    this.shadowRoot.querySelector('video-player').shadowRoot.querySelector('a11y-media-player').play();
   }
   extractVideoId(link) {
     try {
@@ -199,13 +205,13 @@ export class TvApp extends LitElement {
 
   itemClick(e) {
     console.log(e.target);
-    this.activeItem = {
+    this.nextItem = {
       title: e.target.title,
       id: e.target.id,
       description: e.target.description,
       video: e.target.video,
+      presenter: e.target.presenter,
     };
-    this.changeVideo(); // Call changeVideo 
     const dialog = this.shadowRoot.querySelector('.dialog');
     dialog.show();
   }

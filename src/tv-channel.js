@@ -8,6 +8,7 @@ export class TvChannel extends LitElement {
     this.title = '';
     this.presenter = '';
     this.video= '';
+    this.description = '';
   }
   // convention I enjoy using to define the tag's name
   static get tag() {
